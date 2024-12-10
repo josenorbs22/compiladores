@@ -151,12 +151,38 @@ def p_declaracoes(p):
     '''declaracoes : ID SEMICOLON
                 | ID COMMA declaracoes
                 | ID EQUALS math SEMICOLON
+                | ID EQUALS math COMMA declaracoes SEMICOLON
                 | tipos ID SEMICOLON 
                 | tipos ID COMMA declaracoes
                 | tipos ID declaracoes SEMICOLON
                 | tipos ID EQUALS math SEMICOLON'''
-    print("Reconheci Declarações", p[1], p[2])
-    simbolos[p[2]] = {'valor': None, 'tipo': p[1], 'contexto':get_contexto()}
+
+    if(len(p) == 4):
+        simbolos[p[2]] = {'valor': None, 'tipo': p[1], 'contexto':get_contexto()}
+        print("Reconheci Declarações", p[1], p[2])
+        p[0] = p[2]
+    elif(len(p) == 5):
+        simbolos[p[2]] = {'valor': p[4], 'tipo': p[1], 'contexto':get_contexto()}
+        p[0] = p[2]
+    elif(len(p) == 4 and p[2] == "EQUALS"):
+        simbolos[p[1]] = {'valor': p[3], 'tipo': None, 'contexto':get_contexto()}
+        p[0] = p[1]
+    elif(len(p) == 3):
+        simbolos[p[1]] = {'valor': None, 'tipo': None, 'contexto':get_contexto()}
+        p[0] = p[1]
+    elif(len(p) == 4 and p[2] == "COMMA"):
+        simbolos[p[1]] = {'valor': None, 'tipo': None, 'contexto':get_contexto()}
+        p[0] = p[1]
+    elif(len(p) == 6):
+        simbolos[p[1]] = {'valor': p[3], 'tipo': None, 'contexto':get_contexto()}
+        p[0] = p[1]
+    elif(len(p) == 4 and p[3] == "COMMA"):
+        simbolos[p[2]] = {'valor': None, 'tipo': p[1], 'contexto':get_contexto()}
+        p[0] = p[1]
+        simbolos[p[4]] = {'valor': None, 'tipo': p[1], 'contexto':get_contexto()}
+    elif(len(p) == 4 and p[2] == "EQUALS"):
+        simbolos[p[1]] = {'valor': p[3], 'tipo': None, 'contexto':get_contexto()}
+        p[0] = p[1]
 
 def p_ifelse(p):
     '''ifelse : IF LPAREN condicao RPAREN bloco
